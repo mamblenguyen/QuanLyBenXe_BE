@@ -6,9 +6,10 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libzip-dev \  # Install libzip-dev to resolve missing dependency
+    libzip-dev \
     zip \
     git \
+    nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip
 
@@ -21,11 +22,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy the Laravel application to the container
 COPY . .
 
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Install Laravel dependencies using Composer
 RUN composer install --no-dev --optimize-autoloader
 
 # Expose port 80 for the app to be accessible
 EXPOSE 80
 
-# Start the Laravel application using Artisan server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+# Start PHP-FPM and Nginx
+CMD service nginx start && php-fpm
