@@ -14,4 +14,4 @@ cmds = [
 ]
 
 [start]
-cmd = "php -S 0.0.0.0:8080 -t public"  # Sử dụng PHP built-in server cho Laravel
+cmd = "php-fpm -y /assets/php-fpm.conf & nginx -c /assets/nginx.conf"
