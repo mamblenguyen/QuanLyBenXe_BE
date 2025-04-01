@@ -22,7 +22,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy the Laravel application to the container
 COPY . .
 
-# Copy Nginx configuration
+# Copy Nginx configuration (create this file in your project directory)
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Install Laravel dependencies using Composer
@@ -31,5 +31,5 @@ RUN composer install --no-dev --optimize-autoloader
 # Expose port 80 for the app to be accessible
 EXPOSE 80
 
-# Start PHP-FPM and Nginx
+# Start Nginx and PHP-FPM together
 CMD service nginx start && php-fpm
