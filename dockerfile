@@ -1,4 +1,4 @@
-# Use the PHP 8.2 FPM image instead of 8.0
+# Use the PHP 8.2 FPM image
 FROM php:8.2-fpm
 
 # Install system dependencies and PHP extensions
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd pdo pdo_mysql zip
 
 # Set working directory
 WORKDIR /var/www
