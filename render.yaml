@@ -4,8 +4,6 @@ services:
     runtime: docker  # Use Docker to run PHP
     buildCommand: |
       composer install --no-dev --optimize-autoloader
-    startCommand: |
-      php artisan serve --host=0.0.0.0 --port=80
     envVars:
       - key: APP_KEY
         value: base64:ygU3pFZjC8oL/GBiOvAUFHzf958k8Zf31q4K8tArcv0=
