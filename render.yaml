@@ -8,18 +8,18 @@ services:
       php artisan serve --host=0.0.0.0 --port=80
     envVars:
       - key: APP_KEY
-        value: YOUR_APP_KEY
+        value: base64:ygU3pFZjC8oL/GBiOvAUFHzf958k8Zf31q4K8tArcv0=
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: YOUR_DATABASE_HOST
+        value: localhost
       - key: DB_PORT
         value: 3306
       - key: DB_DATABASE
-        value: YOUR_DATABASE_NAME
+        value: route_management
       - key: DB_USERNAME
-        value: YOUR_DATABASE_USERNAME
+        value: root
       - key: DB_PASSWORD
-        value: YOUR_DATABASE_PASSWORD
+        value: mysql
     plan: free
-    branch: master
+    branch: main
