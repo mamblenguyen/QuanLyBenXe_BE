@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libzip-dev \  # Install libzip-dev to resolve missing dependency
     zip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
