@@ -6,6 +6,8 @@ cmds = [
   "composer install --no-dev --optimize-autoloader",
   "php artisan key:generate",
   "php artisan migrate --force",
+  "php artisan vietnamzone:import",
+  "php artisan db:seed --force",  # Thêm lệnh này để seed dữ liệu
   "php artisan config:cache",
   "php artisan route:cache",
   "php artisan view:cache"
