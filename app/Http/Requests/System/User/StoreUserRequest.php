@@ -31,6 +31,7 @@ class StoreUserRequest extends FormRequest
             'gender' => 'nullable|in:Nam,Nữ,Khác', // Gender should be one of these options
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string',
+            'avatar' => 'required',
             'identity_card' => 'required|string|unique:users,identity_card|max:20', // Validate identity card uniqueness
             'identity_issue_place' => 'nullable|string|max:255',
             'identity_issue_date' => 'nullable|date',
@@ -52,6 +53,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên người dùng là bắt buộc.',
+            'avatar.required' => 'Ảnh người dùng là bắt buộc.',
             'email.required' => 'Email là bắt buộc.',
             'email.email' => 'Email không hợp lệ.',
             'email.unique' => 'Email đã được sử dụng.',

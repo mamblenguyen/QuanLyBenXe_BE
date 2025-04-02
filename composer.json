@@ -6,10 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "alireaza/php-form-data": "^1.1",
         "kjmtrue/vietnam-zone": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "quix-labs/laravel-supabase-flysystem": "^1.0",
         "tymon/jwt-auth": "^2.1",
         "vonage/client": "^4.1"
     },

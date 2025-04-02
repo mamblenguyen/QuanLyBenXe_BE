@@ -29,14 +29,22 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $userId, // Cho phép email hiện tại
             'password' => 'nullable|string|min:8',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:Nam,Nữ,Khác',
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string',
-            'garage_id'=> 'required|exists:garages,id',
-            'roles' => 'array',
-            'roles.*' => 'exists:roles,id', // Đảm bảo vai trò hợp lệ
+            'avatar' => 'nullable', // Avatar có thể không bắt buộc khi cập nhật
+            'identity_card' => 'required|string|unique:users,identity_card,' . $userId . '|max:20',
+            'identity_issue_place' => 'nullable|string|max:255',
+            'identity_issue_date' => 'nullable|date',
+            'status' => 'nullable|in:Đang hoạt động,Tạm dừng,Đã khóa',
+            'license' => 'nullable|string|max:10',
+            'license_issue_date' => 'nullable|date',
+            'license_expiry_date' => 'nullable|date|after_or_equal:license_issue_date',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,id',
         ];
     }
-
 
     /**
      * Get custom error messages for validation rules.
@@ -49,10 +57,16 @@ class UpdateUserRequest extends FormRequest
             'name.required' => 'Tên người dùng là bắt buộc.',
             'email.required' => 'Email là bắt buộc.',
             'email.email' => 'Email không hợp lệ.',
-            'email.unique' => 'Email đã được sử dụng bởi người dùng khác.', // This will only trigger for other users
+            'email.unique' => 'Email đã được sử dụng bởi người dùng khác.',
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
-            'garage_id.required'=> 'Xin vui lòng chọn garage',
-            'phone.max' => 'Số điện thoại không được dài quá 15 ký tự.',
+            'birthday.date' => 'Ngày sinh phải là một ngày hợp lệ.',
+            'gender.in' => 'Giới tính phải là Nam, Nữ, hoặc Khác.',
+            'identity_card.required' => 'Số CMND/CCCD là bắt buộc.',
+            'identity_card.unique' => 'Số CMND/CCCD đã được sử dụng.',
+            'identity_card.max' => 'Số CMND/CCCD không được vượt quá 20 ký tự.',
+            'status.in' => 'Trạng thái phải là Đang hoạt động, Tạm dừng hoặc Đã khóa.',
+            'license.max' => 'Số giấy phép không được vượt quá 10 ký tự.',
+            'license_expiry_date.after_or_equal' => 'Ngày hết hạn giấy phép phải sau ngày cấp phép.',
         ];
     }
 
