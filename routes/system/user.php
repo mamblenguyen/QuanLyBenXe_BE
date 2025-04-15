@@ -22,8 +22,8 @@ Route::prefix('/user')->name('user.')
         Route::post('users', [UserController::class, 'store'])
             ->middleware('secret.key');
 
-        Route::put('users/{id}', [UserController::class, 'update'])
-            ->middleware(['role.check:admin', 'secret.key']);
+        Route::post('users/{id}', [UserController::class, 'update'])
+            ->middleware(['secret.key']);
 
         Route::delete('users/{id}', [UserController::class, 'destroy'])
             ->middleware(['role.check:admin', 'secret.key']);

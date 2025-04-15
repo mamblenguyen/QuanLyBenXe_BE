@@ -20,7 +20,10 @@ class UserListResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,  // Added phone number
             'address' => $this->address, 
+            'avatar' => $this->avatar, 
             'password' => $this->password, // Added address
+            'birthday' => $this->birthday, 
+            'gender' => $this->gender, 
             'identity_card' => $this->identity_card,  // Added identity card
             'identity_issue_place' => $this->identity_issue_place,  // Added place of issue
             'identity_issue_date' => $this->identity_issue_date,  // Added date of issue

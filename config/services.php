@@ -27,7 +27,12 @@ return [
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],
-
+    'supabase' => [
+        'driver' => 'supabase',
+        'url' => env('SUPABASE_URL'),
+        'key' => env('SUPABASE_KEY'),
+        'bucket' => env('SUPABASE_STORAGE_BUCKET'),
+    ],
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

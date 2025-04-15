@@ -29,7 +29,12 @@ return [
     */
 
     'disks' => [
-
+        'supabase' => [
+            'driver' => 'supabase',
+            'url' => env('SUPABASE_URL'),
+            'api_key' => env('SUPABASE_KEY'),
+            'bucket' => env('SUPABASE_STORAGE_BUCKET'),
+        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
