@@ -24,7 +24,10 @@ jobs:
     - name: Run Docker Compose on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@13.228.62.0 << 'EOF'
+          docker stop $(docker ps -q) || true
+          docker rm $(docker ps -aq) || true
+          docker-compose -f /home/ec2-user/QuanLyBenXe_BE/docker-compose.yml down || true
           cd /home/ec2-user/QuanLyBenXe_BE
-          docker-compose down || true
           docker-compose up -d --build
         EOF
+
