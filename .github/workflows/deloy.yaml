@@ -19,12 +19,12 @@ jobs:
 
     - name: Copy code to EC2
       run: |
-        rsync -avz --exclude=".git" --exclude="vendor" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/QuanLyBenXe_BE
+        rsync -avz --exclude=".git" --exclude="vendor" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
 
     - name: Run Docker Compose on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@13.228.62.0 << 'EOF'
-          cd QuanLyBenXe_BE
-          docker-compose down
+          cd /home/ec2-user/QuanLyBenXe_BE
+          docker-compose down || true
           docker-compose up -d --build
         EOF
