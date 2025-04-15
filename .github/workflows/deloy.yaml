@@ -17,30 +17,23 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Copy code to EC2
-      run: |
-        rsync -avz --ignore-errors --exclude=".git" --exclude="vendor" --exclude=".env" --force -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
-
 
     - name: Set permissions for files
       run: |
         sudo chmod -R 755 tests
 
+    - name: Copy code to EC2
+      run: |
+        rsync -avz --exclude=".git" --exclude="vendor" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
 
     - name: Run Docker Compose on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@13.228.62.0 << 'EOF'
-          # Dừng và xóa các container cũ
           docker stop $(docker ps -q) || true
           docker rm $(docker ps -aq) || true
-          
-          # Chuyển đến thư mục dự án và hạ các dịch vụ nếu có
           docker-compose -f /home/ec2-user/QuanLyBenXe_BE/docker-compose.yml down || true
-          
-          # Xây dựng lại và khởi động các dịch vụ
           cd /home/ec2-user/QuanLyBenXe_BE
           docker-compose up -d --build
-
-          # Kiểm tra các logs để tìm lỗi
-          docker-compose logs
+          docker-compose logs 
         EOF
+
