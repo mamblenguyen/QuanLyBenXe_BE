@@ -17,14 +17,9 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-
-    - name: Set permissions for files
-      run: |
-        sudo chmod -R 755 tests
-
     - name: Copy code to EC2
       run: |
-        rsync -avz --exclude=".git" --exclude="vendor" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
+        rsync -avz --exclude=".git" --exclude="vendor" --exclude=".env" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
 
     - name: Run Docker Compose on EC2
       run: |
