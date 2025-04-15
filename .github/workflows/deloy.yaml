@@ -19,7 +19,8 @@ jobs:
 
     - name: Copy code to EC2
       run: |
-        rsync -avz --ignore-errors --exclude=".git" --exclude="vendor" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
+        rsync -avz --dry-run --exclude=".git" --exclude="vendor" -e "ssh -o StrictHostKeyChecking=no" ./ ec2-user@13.228.62.0:/home/ec2-user/QuanLyBenXe_BE
+
 
 
     - name: Run Docker Compose on EC2
