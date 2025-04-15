@@ -1,35 +1,16 @@
-# Use the PHP 8.2 FPM image
 FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    zip \
-    git \
-    nginx \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip
+    zip unzip git curl libpng-dev libonig-dev libxml2-dev libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Set working directory
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 WORKDIR /var/www
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Copy the Laravel application to the container
 COPY . .
 
-# Copy Nginx configuration (create this file in your project directory)
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Install Laravel dependencies using Composer
 RUN composer install --no-dev --optimize-autoloader
+RUN chmod -R 777 storage bootstrap/cache
 
-# Expose port 80 for the app to be accessible
-EXPOSE 80
-
-# Start Nginx and PHP-FPM together
-CMD service nginx start && php-fpm
+CMD ["php-fpm"]
