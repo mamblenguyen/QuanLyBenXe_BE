@@ -24,10 +24,17 @@ jobs:
     - name: Run Docker Compose on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@13.228.62.0 << 'EOF'
+          # Dừng và xóa các container cũ
           docker stop $(docker ps -q) || true
           docker rm $(docker ps -aq) || true
+          
+          # Chuyển đến thư mục dự án và hạ các dịch vụ nếu có
           docker-compose -f /home/ec2-user/QuanLyBenXe_BE/docker-compose.yml down || true
+          
+          # Xây dựng lại và khởi động các dịch vụ
           cd /home/ec2-user/QuanLyBenXe_BE
           docker-compose up -d --build
-        EOF
 
+          # Kiểm tra các logs để tìm lỗi
+          docker-compose logs
+        EOF
