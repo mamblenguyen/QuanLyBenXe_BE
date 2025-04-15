@@ -24,7 +24,7 @@ jobs:
     - name: Run Docker Compose on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@13.228.62.0 << 'EOF'
-          cd /home/ec2-user/laravel-api
+          cd QuanLyBenXe_BE
           docker-compose down
           docker-compose up -d --build
         EOF
