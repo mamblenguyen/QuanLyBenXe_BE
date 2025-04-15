@@ -29,8 +29,13 @@ jobs:
           docker stop $(docker ps -q) || true
           docker rm $(docker ps -aq) || true
           docker-compose -f /home/ec2-user/QuanLyBenXe_BE/docker-compose.yml down || true
-          cd /home/ec2-user/QuanLyBenXe_BE
+           cd /home/ec2-user/QuanLyBenXe_BE
+
+          # Pull the latest code from the repository
+          git pull origin production
+
+          # Rebuild and restart Docker containers
+          docker-compose down || true
           docker-compose up -d --build
-          docker-compose logs 
         EOF
 
