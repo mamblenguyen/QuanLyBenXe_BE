@@ -29,6 +29,7 @@ class UpdateBusRequest extends FormRequest
 
             'model_id' => 'required|exists:bus_models,id',
             'bus_number' => 'required|string|max:255|unique:buses,bus_number,' . $busId,
+            'status_id' => 'required',
 //            'garage_id' => 'required|exists:garages,id',
 
         ];
@@ -46,6 +47,7 @@ class UpdateBusRequest extends FormRequest
             'model_id.exists' => 'The specified bus model does not exist.',
             'bus_number.required' => 'Bus number is required.',
             'bus_number.unique' => 'This bus number has already been taken by another bus.',
+            'status_id.required' => 'Status is required'
 //            'garage_id.required' => 'Garage is required.',
 //            'garage_id.exists' => 'The specified garage does not exist.',
 

@@ -65,48 +65,56 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        DB::beginTransaction(); // Bắt đầu transaction để đảm bảo tính nhất quán
 
+        DB::beginTransaction(); // Bắt đầu transaction để đảm bảo tính nhất quán
+    
         try {
             $requestData = $request->validated();
             $requestData['id'] = (string) Str::uuid();
             $requestData['password'] = Hash::make($requestData['password']);
             $requestData['garage_id'] = auth()->user()->garage_id;
+    
+            // Tạo user mới và load Garage
             $user = $this->userRepository->create($requestData)->load('Garage');
-
+    
+            // Xử lý upload avatar nếu có
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
-                $fileName = $file->getClientOriginalName();
+                $fileName = time() . '_' . $file->getClientOriginalName(); // Đặt tên file tránh trùng lặp
+    
+                // Lưu file lên S3
+                $path = Storage::disk('s3')->putFileAs('avatars', $file, $fileName);
+    
+                // Lấy URL của file trên S3
+                if ($path) {
+                    $avatarUrl = Storage::disk('s3')->url($path);
+                    $user->update(['avatar' => $avatarUrl]);
+                }
+    
+                // Comment lại dòng sử dụng Supabase để có thể sử dụng lại nếu cần
+                /*
                 $path = Storage::disk('supabase')->put($fileName, file_get_contents($file));
-
                 if ($path) {
                     $avatarUrl = config('filesystems.disks.supabase.url') . "/storage/v1/object/public/qlbx1/" . $fileName;
                     $user->update(['avatar' => $avatarUrl]);
                 }
+                */
             }
-
-            // Nếu có danh sách role, lưu vào bảng role_users
+    
+            // Lưu danh sách roles vào bảng role_users (dùng sync để tối ưu)
             if ($request->has('roles')) {
-                $roleUserData = [];
-                foreach ($request->roles as $roleId) {
-                    $roleUserData[] = [
-                        'user_id' => $user->id,
-                        'role_id' => $roleId,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                }
-                DB::table('role_users')->insert($roleUserData);
+                $user->roles()->sync($request->roles);
             }
-
+    
             DB::commit(); // Lưu thay đổi vào database
+    
             return ResponseService::customResponse(new UserListResource($user), 'Create user successfully !!', 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Hoàn tác nếu có lỗi
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
+    
 
 
     public function update(UpdateUserRequest $request, $id)
@@ -128,6 +136,7 @@ class UserController extends Controller
             return ResponseService::customResponse(null, 'Access denied to this user!', 403);
         }
 
+        // Nếu có thay đổi mật khẩu
         if (!empty($requestData['password'])) {
             $requestData['password'] = Hash::make($requestData['password']);
         }
@@ -139,16 +148,22 @@ class UserController extends Controller
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
             $fileName = time() . '_' . $file->getClientOriginalName(); // Đặt tên file tránh trùng lặp
-            $path = Storage::disk('supabase')->put($fileName, file_get_contents($file));
 
+            // Lưu file avatar lên S3
+            $path = Storage::disk('s3')->putFileAs('avatars', $file, $fileName);
+
+            // Lấy URL của file avatar từ S3
             if ($path) {
-                $avatarUrl = config('filesystems.disks.supabase.url') . "/storage/v1/object/public/qlbx1/" . $fileName;
+                $avatarUrl = Storage::disk('s3')->url($path);
                 $user->update(['avatar' => $avatarUrl]);
             }
+
+          
         }
 
         // Cập nhật quyền (roles)
         if ($request->has('roles')) {
+            // Xóa các roles cũ và chèn các role mới
             DB::table('role_users')->where('user_id', $id)->delete();
             $roleUserData = collect($requestData['roles'])->map(fn($roleId) => [
                 'user_id' => $id,
@@ -169,6 +184,7 @@ class UserController extends Controller
         return response()->json(['error' => 'Cập nhật người dùng thất bại.'], 500);
     }
 }
+
 
     
 

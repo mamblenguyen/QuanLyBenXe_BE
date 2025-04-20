@@ -15,13 +15,15 @@ class Bus extends Model
     protected $fillable = [
         'garage_id',      // Garage owner
         'bus_number',   // Unique bus number
-        'model_id',     // Foreign key to BusModel
+        'model_id', 
+        'status_id'
+            // Foreign key to BusModel
     ];
 
     // A bus belongs to a garage (user)
     public function Garage(): BelongsTo
     {
-        return $this->belongsTo(Garage::class , 'garage_id');
+        return $this->belongsTo(Garage::class, 'garage_id');
     }
 
     // A bus belongs to a bus model
@@ -34,5 +36,15 @@ class Bus extends Model
     public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(BusImage::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(BusStatus::class, 'status_id');
     }
 }

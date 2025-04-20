@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Repositories\BusModelRepository;
 use App\Repositories\BusRepository;
 use App\Repositories\DriverRepository;
 use App\Repositories\GarageRepository;
+use App\Repositories\Implementations\BusModelRepositoryInterface;
 use App\Repositories\Implementations\BusRepositoryInterface;
 use App\Repositories\Implementations\DriverRepositoryInterface;
 use App\Repositories\Implementations\GarageRepositoryInterface;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(BusModelRepositoryInterface::class, BusModelRepository::class);
         $this->app->bind(BusRepositoryInterface::class, BusRepository::class);
         $this->app->bind(GarageRepositoryInterface::class, GarageRepository::class);
         $this->app->bind(DriverRepositoryInterface::class, DriverRepository::class);

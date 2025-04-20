@@ -17,20 +17,22 @@ class BusListResource extends JsonResource
         return [
             'id' => $this->id,
             'bus_number' => $this->bus_number,
-            'model' => $this->busModel ? [ // Check if the relationship exists
+            'model' => $this->busModel ? [
                 'id' => $this->busModel->id,
                 'name' => $this->busModel->name,
                 'capacity' => $this->busModel->capacity,
-            ] : null, // Return null if there's no associated model
-            'garage' => $this->Garage ? [ // Check if the relationship exists
+            ] : null,
+            'status' => $this->status,  
+            'garage' => $this->Garage ? [
                 'id' => $this->Garage->id,
                 'name' => $this->Garage->name,
                 'tax_code' => $this->Garage->tax_code,
                 'address' => $this->Garage->address,
                 'phone' => $this->Garage->phone,
-
-
             ] : null,
+            'images' => $this->images->map(function ($image) {
+                return asset( $image->image_path); 
+            }), 
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];

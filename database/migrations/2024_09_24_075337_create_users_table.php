@@ -11,6 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // 1. Tạo bảng trạng thái người dùng
+        Schema::create('user_statuses', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique(); // VD: Đang hoạt động, Tạm dừng, Đã khóa
+            $table->timestamps();
+        });
+
+        // 2. Tạo bảng người dùng
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name', 255);
@@ -24,12 +32,18 @@ return new class extends Migration
             $table->string('identity_card', 12)->unique();
             $table->string('identity_issue_place', 255)->nullable();
             $table->date('identity_issue_date')->nullable();
-            $table->enum('status', ['Đang hoạt động', 'Tạm dừng', 'Đã khóa'])->default('Đang hoạt động');
+
+            // Thay enum bằng foreign key status_id
+            $table->unsignedBigInteger('status_id')->default(1);
+            $table->foreign('status_id')->references('id')->on('user_statuses')->onDelete('restrict');
+
             $table->string('license', 10)->nullable();
             $table->date('license_issue_date')->nullable();
             $table->date('license_expiry_date')->nullable();
+
             $table->unsignedBigInteger('garage_id');
             $table->foreign('garage_id')->references('id')->on('garages')->onDelete('cascade');
+
             $table->timestamps();
         });
 
@@ -40,8 +54,8 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->uuid('id')->primary(); // Sử dụng UUID cho id
-            $table->uuid('user_id')->nullable()->index(); // Thay đổi thành UUID
+            $table->uuid('id')->primary();
+            $table->uuid('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -54,8 +68,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_statuses');
     }
 };

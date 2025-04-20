@@ -24,10 +24,10 @@ class StoreBusRequest extends FormRequest
     public function rules(): array
     {
         return [
-                        'garage_id' => 'required|exists:garages,id',
-
+            'garage_id' => 'required|exists:garages,id',
             'model_id' => 'required|exists:bus_models,id', // Validate model_id and ensure it exists in bus_models table
             'bus_number' => 'required|string|max:255|unique:buses,bus_number', // Unique bus number
+            'status_id' => 'required'
         ];
     }
 
@@ -46,6 +46,7 @@ class StoreBusRequest extends FormRequest
             'bus_number.unique' => 'This bus number has already been taken.',
             'garage_id.required' => 'Garage is required.',
             'garage_id.exists' => 'The specified garage does not exist.',
+            'status_id.required' => 'Trạng thái không được để trống'
         ];
     }
 
