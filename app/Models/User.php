@@ -49,6 +49,10 @@ class User extends Authenticatable implements JWTSubject{
     {
         return $this->hasMany(BusModel::class);
     }
+    public function routes(): HasMany
+    {
+        return $this->hasMany(Route::class);
+    }
 
 
     /**

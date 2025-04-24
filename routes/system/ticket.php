@@ -10,13 +10,19 @@ Route::prefix('/tickets')
         Route::post('/book', [TicketController::class, 'store'])
             ->middleware('role.check:admin');
 
-        Route::get('/booked-seats/{route_id}', [TicketController::class, 'getBookedSeats'])
+        Route::get('/list', [TicketController::class, 'list'])
             ->middleware('role.check:admin');
 
-        Route::get('routes/{route_id}/seats', [TicketController::class, 'checkSeats'])
+        Route::get('/detail/{id}', [TicketController::class, 'detail'])
             ->middleware('role.check:admin');
 
-        Route::get('routes/{route_id}/seat-availability', [TicketController::class, 'checkSeatAvailability'])
+        Route::get('/booked-seats/{schedule_id}', [TicketController::class, 'getBookedSeats'])
+            ->middleware('role.check:admin');
+
+        Route::get('routes/{schedule_id}/seats', [TicketController::class, 'checkSeats'])
+            ->middleware('role.check:admin');
+
+        Route::get('routes/{schedule_id}/seat-availability/{date}', [TicketController::class, 'checkSeatAvailability'])
             ->middleware('role.check:admin');;
 
     });

@@ -27,11 +27,11 @@ class RouteRequest extends FormRequest
             'departure_station_id' => 'required|exists:bus_stations,id', // Departure station must exist in bus_stations table
             'arrival_station_id' => 'required|exists:bus_stations,id', // Arrival station must exist in bus_stations table
             'garage_id' => 'required|exists:garages,id', // Garage must exist in garages table
-            'departure_time' => 'required|date_format:H:i', // Departure time format
-            'arrival_time' => 'required|date_format:H:i', // Arrival time format
-            'ticket_price' => 'required|numeric|min:0', // Ticket price must be a positive number
+            // 'departure_time' => 'required|date_format:H:i', // Departure time format
+            // 'arrival_time' => 'required|date_format:H:i', // Arrival time format
+            // 'ticket_price' => 'required|numeric|min:0', // Ticket price must be a positive number
             'bus_id' => 'required|exists:buses,id', // Bus must exist in buses table
-            'driver_id' => 'required|exists:drivers,id', // Driver must exist in drivers table
+            'driver_id' => 'required|exists:users,id', // Driver must exist in drivers table
         ];
     }
 
@@ -49,17 +49,17 @@ class RouteRequest extends FormRequest
             'arrival_station_id.exists' => 'Bến xe đến không tồn tại.',
             'garage_id.required' => 'Garage là bắt buộc.',
             'garage_id.exists' => 'Garage không tồn tại.',
-            'departure_time.required' => 'Thời gian khởi hành là bắt buộc.',
-            'departure_time.date_format' => 'Thời gian khởi hành không đúng định dạng.',
-            'arrival_time.required' => 'Thời gian đến là bắt buộc.',
-            'arrival_time.date_format' => 'Thời gian đến không đúng định dạng.',
-            'ticket_price.required' => 'Giá vé là bắt buộc.',
-            'ticket_price.numeric' => 'Giá vé phải là một số.',
-            'ticket_price.min' => 'Giá vé phải lớn hơn hoặc bằng 0.',
+            // 'departure_time.required' => 'Thời gian khởi hành là bắt buộc.',
+            // 'departure_time.date_format' => 'Thời gian khởi hành không đúng định dạng.',
+            // 'arrival_time.required' => 'Thời gian đến là bắt buộc.',
+            // 'arrival_time.date_format' => 'Thời gian đến không đúng định dạng.',
+            // 'ticket_price.required' => 'Giá vé là bắt buộc.',
+            // 'ticket_price.numeric' => 'Giá vé phải là một số.',
+            // 'ticket_price.min' => 'Giá vé phải lớn hơn hoặc bằng 0.',
             'bus_id.required' => 'ID xe là bắt buộc.',
             'bus_id.exists' => 'Xe không tồn tại.',
             'driver_id.required' => 'ID tài xế là bắt buộc.',
-            'driver_id.exists' => 'Tài xế không tồn tại.',
+            'driver_id.exists' => 'Tài xế hiện đang chạy cho xe khác.',
         ];
     }
 

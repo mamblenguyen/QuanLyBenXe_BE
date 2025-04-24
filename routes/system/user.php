@@ -12,6 +12,11 @@ Route::prefix('/user')->name('user.')
         // Thêm middleware secret.key cho từng route
         Route::get('list', [UserController::class, 'getAll'])
             ->middleware(['role.check:admin', 'secret.key']);
+        Route::get('list/driver', [UserController::class, 'getAvailableDrivers'])
+            ->middleware(['role.check:admin', 'secret.key']);
+
+        Route::get('list/driver/{currentDriverId}', [UserController::class, 'getAvailableDriversEdit'])
+            ->middleware(['role.check:admin', 'secret.key']);
 
         Route::get('users', [UserController::class, 'index'])
             ->middleware(['role.check:staff', 'secret.key']);

@@ -15,10 +15,13 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             RoleUserSeeder::class,
             BusModelSeeder::class,
+            StationStatusSeeder::class,
             BusStatusSeeder::class,
             BusSeeder::class,
             BusStationSeeder::class,
+            ScheduleStatusSeeder::class,
             DriverSeeder::class,
+            RouteStatusSeeder::class,
             RouteSeeder::class,
             TicketSeeder::class
         ]);
