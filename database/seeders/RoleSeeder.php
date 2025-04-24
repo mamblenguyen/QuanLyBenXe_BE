@@ -25,7 +25,10 @@ class RoleSeeder extends Seeder
                 'created_at' => \Illuminate\Support\Carbon::now(),
                 'updated_at' => \Illuminate\Support\Carbon::now(),
             ],
-
+            ['name' => 'Driver',
+            'created_at' => \Illuminate\Support\Carbon::now(),
+            'updated_at' => \Illuminate\Support\Carbon::now(),
+        ],
 
             // Add more roles as needed
         ]);

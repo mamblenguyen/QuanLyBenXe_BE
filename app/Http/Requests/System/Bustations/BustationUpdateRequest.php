@@ -27,6 +27,8 @@ class BustationUpdateRequest extends FormRequest
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'province_id' => 'required',
+            'status_id' => 'required',
+
         ];
     }
 
@@ -45,6 +47,8 @@ class BustationUpdateRequest extends FormRequest
             'name.string' => 'Tên trạm xe buýt phải là chuỗi ký tự hợp lệ.',
             'name.max' => 'Tên không được vượt quá 255 ký tự.',
             'province_id.required' => 'Tỉnh/thành phố là bắt buộc.',
+            'status_id.required' => 'Xin vui lòng chọn trạng thái bến',
+
         ];
     }
 

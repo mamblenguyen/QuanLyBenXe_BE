@@ -17,6 +17,8 @@ class BusSeeder extends Seeder
     {
         $garages = DB::table('garages')->pluck('id')->toArray();
         $models = DB::table('bus_models')->pluck('id')->toArray();
+        $status = DB::table('bus_statuses')->pluck('id')->toArray();
+
         $buses = [];
 
         for ($i = 1; $i <= 5; $i++) {
@@ -24,6 +26,8 @@ class BusSeeder extends Seeder
                 'garage_id' => $garages[array_rand($garages)], // Select a random user ID
                 'bus_number' => 'BUS00' . $i,
                 'model_id' => $models[array_rand($models)], // Select a random model ID
+                'status_id' => $models[array_rand($status)], // Select a random model ID
+
                 'created_at' => \Illuminate\Support\Carbon::now(),
                 'updated_at' => \Illuminate\Support\Carbon::now(),
             ];

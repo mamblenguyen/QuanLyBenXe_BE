@@ -16,25 +16,25 @@ class TicketRepository
         $this->ticket = $ticket;
     }
 
-    public function areSeatsBooked($route_id, array $seat_numbers, $date): bool
+    public function areSeatsBooked($schedule_id, array $seat_numbers, $date): bool
     {
         // Kiểm tra ghế đã đặt cho cùng tuyến và ngày
-        return BookedSeat::where('route_id', $route_id)
+        return BookedSeat::where('schedule_id', $schedule_id)
             ->whereIn('seat_number', $seat_numbers)
             ->where('date', $date)
             ->exists();
     }
 
-    public function bookSeats($route_id, array $seat_numbers, $date): void
+    public function bookSeats($schedule_id, array $seat_numbers, $date): void
     {
         if (empty($seat_numbers)) {
             return;
         }
 
         // Prepare the data for bulk insert into BookedSeat table
-        $seatsToBook = array_map(function ($seat_number) use ($route_id, $date) {
+        $seatsToBook = array_map(function ($seat_number) use ($schedule_id, $date) {
             return [
-                'route_id' => $route_id,
+                'schedule_id' => $schedule_id,
                 'seat_number' => $seat_number,
                 'date' => $date,
                 'created_at' => now(),
@@ -69,12 +69,11 @@ class TicketRepository
         return $ticket;
     }
 
-    public function getSeatAvailability($route_id, $date)
+    public function getSeatAvailability($route_id ,$schedule_id, $date)
     {
         $route = Route::with('bus.busModel')->findOrFail($route_id);
-
         // Get all booked seats for the given route and date
-        $bookedSeats = BookedSeat::where('route_id', $route_id)
+        $bookedSeats = BookedSeat::where('schedule_id', $schedule_id)
             ->where('date', $date)
             ->pluck('seat_number')
             ->toArray();
@@ -95,9 +94,9 @@ class TicketRepository
         ];
     }
 
-    public function getBookedSeatsByRoute($route_id, $date): Collection
+    public function getBookedSeatsByRoute($schedule_id, $date): Collection
     {
-        return BookedSeat::where('route_id', $route_id)
+        return BookedSeat::where('schedule_id', $schedule_id)
             ->where('date', $date)
             ->get();
     }

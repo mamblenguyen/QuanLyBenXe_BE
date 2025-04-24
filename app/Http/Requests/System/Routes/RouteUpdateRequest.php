@@ -26,11 +26,11 @@ class RouteUpdateRequest extends FormRequest
         return [
             'departure_station_id' => 'required|exists:bus_stations,id',
             'arrival_station_id' => 'required|exists:bus_stations,id',
-            'departure_time' => 'required|date_format:H:i',
-            'arrival_time' => 'required|date_format:H:i|after:departure_time',
-            'ticket_price' => 'required|numeric|min:0',
+            // 'departure_time' => 'required|date_format:H:i',
+            // 'arrival_time' => 'required|date_format:H:i|after:departure_time',
+            // 'ticket_price' => 'required|numeric|min:0',
             'bus_id' => 'required|exists:buses,id',
-            'driver_id' => 'required|exists:drivers,id', // Thêm driver_id vào đây nếu cần
+            'driver_id' => 'required|exists:users,id', // Thêm driver_id vào đây nếu cần
         ];
     }
 
@@ -46,14 +46,14 @@ class RouteUpdateRequest extends FormRequest
             'departure_station_id.exists' => 'Trạm xuất phát không tồn tại.',
             'arrival_station_id.required' => 'Trạm đến là bắt buộc.',
             'arrival_station_id.exists' => 'Trạm đến không tồn tại.',
-            'departure_time.required' => 'Thời gian khởi hành là bắt buộc.',
-            'departure_time.date_format' => 'Thời gian khởi hành phải ở định dạng HH:MM.',
-            'arrival_time.required' => 'Thời gian đến là bắt buộc.',
-            'arrival_time.date_format' => 'Thời gian đến phải ở định dạng HH:MM.',
-            'arrival_time.after' => 'Thời gian đến phải sau thời gian khởi hành.',
-            'ticket_price.required' => 'Giá vé là bắt buộc.',
-            'ticket_price.numeric' => 'Giá vé phải là một số.',
-            'ticket_price.min' => 'Giá vé phải lớn hơn hoặc bằng 0.',
+            // 'departure_time.required' => 'Thời gian khởi hành là bắt buộc.',
+            // 'departure_time.date_format' => 'Thời gian khởi hành phải ở định dạng HH:MM.',
+            // 'arrival_time.required' => 'Thời gian đến là bắt buộc.',
+            // 'arrival_time.date_format' => 'Thời gian đến phải ở định dạng HH:MM.',
+            // 'arrival_time.after' => 'Thời gian đến phải sau thời gian khởi hành.',
+            // 'ticket_price.required' => 'Giá vé là bắt buộc.',
+            // 'ticket_price.numeric' => 'Giá vé phải là một số.',
+            // 'ticket_price.min' => 'Giá vé phải lớn hơn hoặc bằng 0.',
             'bus_id.required' => 'ID xe là bắt buộc.',
             'bus_id.exists' => 'Xe không tồn tại.',
             'driver_id.required' => 'ID tài xế là bắt buộc.',
