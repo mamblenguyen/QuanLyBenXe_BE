@@ -22,6 +22,7 @@ class TicketDetailResource extends JsonResource
             'ticket_price' => $this->schedule->ticket_price,
             'date' =>  $this->date,
             'bus_model' => $this->schedule->route->bus->busModel->name,
+            'bus_number' => $this->schedule->route->bus->bus_number,
             'ticket_seat' => $this->seats->map(function ($seat) {
                 return $seat->seat_number;
             }),
