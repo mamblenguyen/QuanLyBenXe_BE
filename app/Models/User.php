@@ -19,7 +19,7 @@ class User extends Authenticatable implements JWTSubject{
 
     protected $fillable = [
         'id', 'name', 'email', 'garage_id', 'password', 'phone', 'address', 'avatar',
-        'identity_card', 'identity_issue_place', 'identity_issue_date', 'status', 'birthday', 'gender',
+        'identity_card', 'identity_issue_place', 'identity_issue_date', 'status_id', 'birthday', 'gender',
         'license', 'license_issue_date', 'license_expiry_date'
     ];
 
@@ -36,6 +36,11 @@ class User extends Authenticatable implements JWTSubject{
         return $this->belongsToMany(Role::class, 'role_users', 'user_id', 'role_id');
     }
 
+    public function status()
+{
+    return $this->belongsTo(UserStatus::class, 'status_id');
+}
+
     public function Garage(): BelongsTo
     {
         return $this->belongsTo(Garage::class, 'garage_id'); // Foreign key: model_id
@@ -43,6 +48,10 @@ class User extends Authenticatable implements JWTSubject{
     public function buses(): HasMany
     {
         return $this->hasMany(BusModel::class);
+    }
+    public function routes(): HasMany
+    {
+        return $this->hasMany(Route::class);
     }
 
 

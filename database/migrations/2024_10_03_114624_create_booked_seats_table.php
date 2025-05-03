@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('booked_seats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('route_id');
+            $table->unsignedBigInteger('schedule_id');
             $table->integer('seat_number');
             $table->date('date');
             $table->timestamps();
 
-            $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
-            $table->unique(['route_id', 'seat_number', 'date']); // Prevent duplicate bookings for the same seat on the same day
+            $table->foreign('schedule_id')->references('id')->on('route_schedules')->onDelete('cascade');
+            $table->unique(['schedule_id', 'seat_number', 'date']); // Prevent duplicate bookings for the same seat on the same day
         });
     }
 

@@ -19,6 +19,7 @@ class BusStationResource extends JsonResource
             'name' => $this->name,
             'garage' => $this->garage_id,
             'address' => $this->address,
+            'status' => $this->status,      
             'province' => [
                 'province_id' => $this->province_id,
                 'name' => $this->province->name,

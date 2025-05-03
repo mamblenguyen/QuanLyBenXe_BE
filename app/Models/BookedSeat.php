@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class BookedSeat extends Model
 {
-    protected $fillable = ['route_id', 'seat_number'];
+    protected $fillable = ['schedule_id', 'seat_number'];
 
-    public function route()
+    public function schedule()
     {
-        return $this->belongsTo(Route::class);
+        return $this->belongsTo(RouteSchedule::class);
     }
 }

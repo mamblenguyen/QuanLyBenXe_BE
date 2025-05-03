@@ -11,7 +11,8 @@ use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Storage;
+use App\Models\BusImage;
 class BusController extends Controller
 {
     protected $busRepository;
@@ -42,43 +43,98 @@ class BusController extends Controller
         if (!$garage_id) {
             return ResponseService::customResponse(null, 'Garage ID is required', 400);
         }
-
+    
         // Tìm bus theo id và kiểm tra garage_id
         $bus = $this->busRepository->find($id);
         if (!$bus || $bus->garage_id !== $garage_id) {
             return ResponseService::customResponse(null, 'Bus not found or access denied !!', 403);
         }
-
-        $bus->load('busModel');
+    
+        // Nạp dữ liệu liên quan (bao gồm busModel và busImages)
+        $bus->load('busModel', 'images'); // 'images' là phương thức quan hệ trong model Bus
+    
         return ResponseService::customResponse(new BusListResource($bus), 'Show bus successfully!!', 200);
     }
+    
 
     public function store(StoreBusRequest $request)
     {
+        // Lấy garage_id từ user đã đăng nhập
         $garage_id = auth()->user()->garage_id;
+    
+        // Lấy dữ liệu từ request
         $requestData = $request->all();
         $requestData['garage_id'] = $garage_id;
+    
+        // Tạo xe mới
         $bus = $this->busRepository->create($requestData)->load('busModel');
-
+    
+        // Kiểm tra xem có ảnh không và lưu ảnh vào cơ sở dữ liệu
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Lấy tên gốc của ảnh
+                $fileName = time() . '_' . $image->getClientOriginalName();
+    
+                // Lưu ảnh vào storage (thư mục buses)
+                $path = Storage::disk('s3')->putFileAs('bus', $image, $fileName);
+    
+                if ($path) {
+                    $imageUrl = Storage::disk('s3')->url($path);
+    
+                    // Lưu thông tin ảnh vào bảng bus_images
+                    BusImage::create([
+                        'bus_id' => $bus->id,
+                        'image_path' => $imageUrl,
+                    ]);
+                }
+            }
+        }
+    
+        // Trả về response thành công với dữ liệu bus đã tạo
         return ResponseService::customResponse(new BusListResource($bus), 'Create bus successfully !!', 201);
     }
+    
+    
 
     public function update(UpdateBusRequest $request, $id)
     {
-
         $userGarageId = auth()->user()->garage_id;
         $bus = $this->busRepository->find($id);
+    
         if (!$bus) {
             return ResponseService::customResponse(null, 'Bus not found !!', 404);
         }
+    
         if ($bus->garage_id !== $userGarageId) {
             return ResponseService::customResponse(null, 'Access denied! You can only update buses from your own garage.', 403);
         }
+    
         $validatedData = $request->validated();
         $bus = $this->busRepository->update($id, $validatedData)->load('busModel');
-
+    
+        // ✅ Xử lý lưu ảnh nếu có file ảnh mới được upload
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $fileName = time() . '_' . $image->getClientOriginalName();
+    
+                // Lưu ảnh vào S3
+                $path = Storage::disk('s3')->putFileAs('bus', $image, $fileName);
+    
+                if ($path) {
+                    $imageUrl = Storage::disk('s3')->url($path);
+    
+                    // Lưu đường dẫn ảnh vào bảng bus_images
+                    BusImage::create([
+                        'bus_id' => $bus->id,
+                        'image_path' => $imageUrl,
+                    ]);
+                }
+            }
+        }
+    
         return ResponseService::customResponse(new BusListResource($bus), 'Update bus successfully !!', 200);
     }
+    
 
 
 
@@ -96,6 +152,31 @@ class BusController extends Controller
         }
         return ResponseService::customResponse(null, 'Bus not found !!', 404);
     }
+
+
+    public function GetAllBusModel(Request $request)
+    {
+        $garage_id = $request->input('garage_id');
+        // dd($garage_id);
+        if (!$garage_id) {
+            return ResponseService::customResponse(null, 'Garage ID is required', 400);
+        }
+        $buses = $this->busRepository->getAll($garage_id)->load('busModel');
+
+        if ($buses->isNotEmpty()) {
+            return ResponseService::customResponse(BusListResource::collection($buses), 'Get all buses successfully !!', 200);
+        }
+        return ResponseService::customResponse(null, 'Buses not found', 404);
+    }
+
+
+
+
+
+
+
+
+
 
 
     public function sendSms(Request $request)

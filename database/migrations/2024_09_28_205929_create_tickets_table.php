@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('route_id');
+            $table->unsignedBigInteger('schedule_id');
             $table->string('full_name');
             $table->string('phone_number');
             $table->string('email');
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('date')->nullable(); // Ngày đặt vé (specific day for the booking)
             $table->timestamps();
 
-            $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
+            $table->foreign('schedule_id')->references('id')->on('route_schedules')->onDelete('cascade');
         });
     }
 

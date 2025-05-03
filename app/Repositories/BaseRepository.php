@@ -19,7 +19,10 @@ abstract class BaseRepository
     {
         return $this->model->where('garage_id', $garage_id)->get();
     }
-
+    public function getAllOutGarage()
+    {
+        return $this->model->all();
+    }
     // Tìm bản ghi theo ID
     public function find($id)
     {

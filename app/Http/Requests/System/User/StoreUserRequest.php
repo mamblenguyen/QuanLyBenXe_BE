@@ -35,9 +35,9 @@ class StoreUserRequest extends FormRequest
             'identity_card' => 'required|string|unique:users,identity_card|max:20', // Validate identity card uniqueness
             'identity_issue_place' => 'required|nullable|string|max:255',
             'identity_issue_date' => 'required|nullable|date',
-            'status' => 'nullable|in:Đang hoạt động,Tạm dừng,Đã khóa', // Validate status
             'license' => 'nullable|string|max:10',
             'license_issue_date' => 'nullable|date',
+            'status_id' => 'required',
             'license_expiry_date' => 'nullable|date|after_or_equal:license_issue_date', // Ensure expiration date is after issue date
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,id', // Ensure valid roles
@@ -66,10 +66,10 @@ class StoreUserRequest extends FormRequest
             'gender.in' => 'Giới tính phải là Nam, Nữ, hoặc Khác.',
             'identity_card.required' => 'Số CMND/CCCD là bắt buộc.',
             'identity_card.unique' => 'Số CMND/CCCD đã được sử dụng.',
+            'status_id.required' => 'Trạng thái là bắt buộc.',
             'identity_card.max' => 'Số CMND/CCCD không được vượt quá 20 ký tự.',
             'identity_issue_place.required' => 'Nơi cấp CMND/CCCD là bắt buộc.',
             'identity_issue_date.required' => 'Ngày cấp CMND/CCCD là bắt buộc.',
-            'status.in' => 'Trạng thái phải là Đang hoạt động, Tạm dừng hoặc Đã khóa.',
             'license.max' => 'Số giấy phép không được vượt quá 10 ký tự.',
             'license_expiry_date.after_or_equal' => 'Ngày hết hạn giấy phép phải sau ngày cấp phép.',
         ];

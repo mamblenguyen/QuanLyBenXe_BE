@@ -9,7 +9,7 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'route_id' => 'required|exists:routes,id',
+            'schedule_id' => 'required|exists:route_schedules,id',
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:15',
             'email' => 'required|email|max:255',

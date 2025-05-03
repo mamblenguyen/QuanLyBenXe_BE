@@ -26,6 +26,7 @@ class BustationRequest extends FormRequest
         return [
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
+            'status_id' => 'required',
             'province_id' => 'required|exists:provinces,id', // Ensure province_id exists in provinces table
         ];
     }
@@ -42,6 +43,7 @@ class BustationRequest extends FormRequest
         'address.string' => 'Địa chỉ phải là chuỗi ký tự.',
         'name.required' => 'Tên là bắt buộc.',
         'name.string' => 'Tên phải là chuỗi ký tự.',
+        'status_id.required' => 'Xin vui lòng chọn trạng thái bến',
         'province_id.required' => 'Tỉnh/thành phố là bắt buộc.',
     ];
 }

@@ -14,13 +14,13 @@ class BusModelSeeder extends Seeder
     public function run(): void
     {
         $models = [
-            ['name' => 'Xe giường nằm', 'capacity' => 50,
+            ['name' => 'Xe giường nằm 45 chổ', 'capacity' => 45,
              'created_at' => \Illuminate\Support\Carbon::now(),
              'updated_at' => \Illuminate\Support\Carbon::now(),],
-            ['name' => 'Xe Limmousin', 'capacity' => 40,
+            ['name' => 'Xe giường nằm 34 chổ', 'capacity' => 34,
               'created_at' => \Illuminate\Support\Carbon::now(),
               'updated_at' => \Illuminate\Support\Carbon::now(),],
-            ['name' => 'Xe ghế ngồi', 'capacity' => 30,
+            ['name' => 'Xe giường nằm VIP 22 phòng', 'capacity' => 22,
              'created_at' => \Illuminate\Support\Carbon::now(),
              'updated_at' => \Illuminate\Support\Carbon::now(),],
 

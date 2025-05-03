@@ -11,6 +11,8 @@ Route::prefix('/bus-station')->name('bus-station.')
         Route::get('/list', [BustationController::class, 'getAll'])
             ->middleware('role.check:admin');
 
+            Route::get('/list/status', [BustationController::class, 'getAllStatus'])
+            ->middleware('role.check:admin');
         Route::post('/create', [BustationController::class, 'create'])
             ->middleware('role.check:admin');
 
@@ -21,5 +23,9 @@ Route::prefix('/bus-station')->name('bus-station.')
             ->middleware('role.check:admin');
 
         Route::delete('/delete/{id}', [BustationController::class, 'destroy'])
+            ->middleware('role.check:admin');
+        Route::put('/bus-stations/{id}/soft-delete', [BustationController::class, 'softDelete'])
+            ->middleware('role.check:admin');
+        Route::put('/bus-stations/{id}/restore', [BustationController::class, 'restore'])
             ->middleware('role.check:admin');
     });
