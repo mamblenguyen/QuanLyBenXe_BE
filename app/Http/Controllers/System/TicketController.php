@@ -25,35 +25,53 @@ class TicketController extends Controller
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function list(){
-        {
-            try {
-                $Tickets = Ticket::all();
+    public function list(Request $request)
+    {
+        try {
+            $garage_id = $request->garage_id;
 
-                if ($Tickets->isEmpty()) {
-                    return ResponseService::customResponse(null, 'No ticket found for this garage.', 404);
-                }
-                return ResponseService::customResponse(TicketResource::collection($Tickets), 'Data retrieved successfully.', 200);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'An error occurred: ' . $e->getMessage()
-                ], 500);
-            }
-        }}
+            $tickets = Ticket::whereHas('schedule.route', function ($query) use ($garage_id) {
+                $query->where('garage_id', $garage_id);
+            })->get();
 
-    public function detail($id){
-        {
-            try {
-                $Tickets = Ticket::find($id);
-                return ResponseService::customResponse(TicketDetailResource::make($Tickets), 'Data retrieved successfully.', 200);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'An error occurred: ' . $e->getMessage()
-                ], 500);
+            if ($tickets->isEmpty()) {
+                return ResponseService::customResponse(null, 'No ticket found for this garage.', 404);
             }
-        }}
+
+            return ResponseService::customResponse(TicketResource::collection($tickets), 'Data retrieved successfully.', 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+public function detail($id, Request $request)
+{
+    try {
+        $garage_id = $request->garage_id;
+
+        $ticket = Ticket::where('id', $id)
+            ->whereHas('schedule.route', function ($query) use ($garage_id) {
+                $query->where('garage_id', $garage_id);
+            })
+            ->first();
+
+        if (!$ticket) {
+            return ResponseService::customResponse(null, 'Ticket not found for this garage.', 404);
+        }
+
+        return ResponseService::customResponse(TicketDetailResource::make($ticket), 'Data retrieved successfully.', 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 
 
     public function store(StoreTicketRequest $request): JsonResponse
@@ -111,12 +129,12 @@ class TicketController extends Controller
         ]);
     }
 
-    public function checkSeatAvailability($schedule_id , $date): JsonResponse
+    public function checkSeatAvailability($schedule_id, $date): JsonResponse
     {
         // $date = now()->toDateString();
         $schedule = RouteSchedule::find($schedule_id);
         $route_id = $schedule->route->id;
-        $availability = $this->ticketRepository->getSeatAvailability($route_id ,$schedule_id, $date);
+        $availability = $this->ticketRepository->getSeatAvailability($route_id, $schedule_id, $date);
         return response()->json([
             'schedule_id' => $schedule_id,
             'booked_seats' => $availability['booked'],
@@ -124,4 +142,47 @@ class TicketController extends Controller
             'total_seats' => $availability['total'],
         ]);
     }
+
+    //Revenue
+   public function revenueByTimeRange(Request $request)
+{
+    $range = $request->input('range');
+    $garage_id = $request->garage_id;
+
+    if (!in_array($range, ['year', 'last_year', 'month', 'last_month', 'week', 'last_week'])) {
+        return response()->json([
+            'message' => 'Invalid range type. Allowed values: year, last_year, month, last_month, week, last_week.'
+        ], 422);
+    }
+
+    try {
+        $revenue = $this->ticketRepository->getRevenueByTimeRange($range, $garage_id);
+        return ResponseService::customResponse([
+                 'range' => $range,
+            'revenue' => $revenue
+            ], 'Data retrieved successfully.', 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error calculating revenue: ' . $e->getMessage()
+        ], 500);
+    }
+}
+public function revenueByDateRange(Request $request)
+{
+    $startDate = $request->query('start_date');
+    $endDate = $request->query('end_date');
+    $garage_id = $request->query('garage_id');
+
+    if (!$startDate || !$endDate) {
+        return response()->json(['message' => 'Missing start_date or end_date'], 422);
+    }
+
+    try {
+        $revenues = $this->ticketRepository->getDailyRevenueByDateRange($startDate, $endDate, $garage_id);
+        return ResponseService::customResponse($revenues, 'Revenue by date retrieved successfully.', 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
+    }
+}
+
 }

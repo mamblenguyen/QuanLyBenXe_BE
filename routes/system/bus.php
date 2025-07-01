@@ -6,11 +6,11 @@ use App\Http\Controllers\System\BusController;
 use App\Http\Controllers\System\BusModelController;
 
 Route::prefix('/bus')->name('bus.')
-   ->middleware(JwtMiddleware::class)
+    ->middleware(JwtMiddleware::class)
     ->group(function () {
         Route::get('/list', [BusController::class, 'getAll'])
             ->middleware('role.check:admin');
-         Route::get('/listBusModel', [BusModelController::class, 'index'])
+        Route::get('/listBusModel', [BusModelController::class, 'index'])
             ->middleware('role.check:admin');
         Route::get('buses', [BusController::class, 'index'])
             ->middleware('role.check:staff,admin');
@@ -27,6 +27,10 @@ Route::prefix('/bus')->name('bus.')
         Route::delete('bus/{id}', [BusController::class, 'destroy'])
             ->middleware('role.check:admin');
 
+        Route::get('/bus/stats/by-status', [BusController::class, 'getBusStatsByStatus'])
+            ->middleware('role.check:admin');
+
+
         Route::post('/send-sms', [BusController::class, 'sendSms']);
         Route::post('/send-zalo-message', [BusController::class, 'sendZaloMessage']);
         Route::get('/send-active/{key}', [BusController::class, 'SendActiveKey']);
@@ -34,4 +38,11 @@ Route::prefix('/bus')->name('bus.')
         Route::post('/send-zalo-template-message', [BusController::class, 'sendTemplateMessage']);
         Route::post('/zalo/send-message', [BusController::class, 'sendMessageText']);
 
+
+
+
+        // Nhận tọa độ
+        Route::post('/buses/{bus_number}/location', [BusController::class, 'BusLocation']);
+
+        Route::get('/admin/bus-locations', [BusController::class, 'latest']);
     });

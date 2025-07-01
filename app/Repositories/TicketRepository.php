@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
-
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Models\BookedSeat;
 use App\Models\Route;
 use App\Models\Ticket;
@@ -105,4 +106,71 @@ class TicketRepository
     {
         return $ticket_price * $quantity;
     }
+
+
+    // Revunue 
+
+  public function getRevenueByTimeRange($range, $garage_id)
+{
+    $query = Ticket::query()
+        ->selectRaw('SUM(price_paid) as total_revenue')
+        ->whereHas('schedule.route', function ($q) use ($garage_id) {
+            $q->where('garage_id', $garage_id);
+        });
+
+    switch ($range) {
+        case 'year':
+            $query->whereYear('date', Carbon::now()->year);
+            break;
+        case 'last_year':
+            $query->whereYear('date', Carbon::now()->subYear()->year);
+            break;
+        case 'month':
+            $query->whereYear('date', Carbon::now()->year)
+                  ->whereMonth('date', Carbon::now()->month);
+            break;
+        case 'last_month':
+            $query->whereYear('date', Carbon::now()->subMonth()->year)
+                  ->whereMonth('date', Carbon::now()->subMonth()->month);
+            break;
+        case 'week':
+            $query->whereBetween('date', [
+                Carbon::now()->startOfWeek(),
+                Carbon::now()->endOfWeek(),
+            ]);
+            break;
+        case 'last_week':
+            $query->whereBetween('date', [
+                Carbon::now()->subWeek()->startOfWeek(),
+                Carbon::now()->subWeek()->endOfWeek(),
+            ]);
+            break;
+        default:
+            return 0;
+    }
+
+    return $query->value('total_revenue') ?? 0;
+}
+
+public function getDailyRevenueByDateRange($startDate, $endDate, $garage_id)
+{
+    $data = Ticket::query()
+        ->selectRaw('DATE(date) as revenue_date, SUM(price_paid) as total_revenue')
+        ->whereBetween('date', [$startDate, $endDate])
+        ->whereHas('schedule.route', function ($q) use ($garage_id) {
+            $q->where('garage_id', $garage_id);
+        })
+        ->groupBy('revenue_date')
+        ->orderBy('revenue_date')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'date' => Carbon::parse($item->revenue_date)->format('d/m'),
+                'revenue' => (float) $item->total_revenue,
+            ];
+        });
+
+    return $data;
+}
+
 }

@@ -30,8 +30,9 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketSeat::class);
     }
-    public function schedule()
-    {
-        return $this->belongsTo(RouteSchedule::class );
-    }
+  public function schedule()
+{
+    return $this->belongsTo(RouteSchedule::class, 'schedule_id');
+}
+
 }

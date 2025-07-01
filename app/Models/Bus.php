@@ -47,4 +47,9 @@ class Bus extends Model
     {
         return $this->belongsTo(BusStatus::class, 'status_id');
     }
+    public function locations()
+{
+    return $this->hasMany(BusLocation::class);
+}
+
 }

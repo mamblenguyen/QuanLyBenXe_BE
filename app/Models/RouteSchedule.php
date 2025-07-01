@@ -18,10 +18,11 @@ class RouteSchedule extends Model
     ];
 
     // Relationship with the route
-    public function route()
-    {
-        return $this->belongsTo(Route::class);
-    }
+   public function route()
+{
+    return $this->belongsTo(Route::class, 'route_id');
+}
+
 
     public function status()
     {

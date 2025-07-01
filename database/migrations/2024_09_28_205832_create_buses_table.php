@@ -32,6 +32,14 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
+        Schema::create('bus_locations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('bus_id')->constrained('buses')->onDelete('cascade');
+            $table->decimal('lat', 10, 7);
+            $table->decimal('lng', 10, 7);
+            $table->timestamps(); // created_at = thời điểm ghi nhận vị trí
+        });
     }
 
     /**

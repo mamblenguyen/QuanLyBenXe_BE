@@ -40,4 +40,6 @@ Route::prefix('/route')->name('route.')
             ->middleware('role.check:admin');
         Route::put('/route/{id}/restore-schedule', [RouteController::class, 'restoreSchedule'])
             ->middleware('role.check:admin');
+        Route::get('/statistic', [RouteController::class, 'getRouteAndScheduleStats'])
+            ->middleware('role.check:admin');
     });

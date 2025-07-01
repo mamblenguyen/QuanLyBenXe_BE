@@ -5,7 +5,7 @@ use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/tickets')
-    // ->middleware(JwtMiddleware::class)
+    ->middleware(JwtMiddleware::class)
     ->group(function () {
         Route::post('/book', [TicketController::class, 'store'])
             ->middleware('role.check:admin');
@@ -24,5 +24,8 @@ Route::prefix('/tickets')
 
         Route::get('routes/{schedule_id}/seat-availability/{date}', [TicketController::class, 'checkSeatAvailability'])
             ->middleware('role.check:admin');;
+        Route::get('/revenue', [TicketController::class, 'revenueByTimeRange']);
+Route::get('/revenue-by-date', [TicketController::class, 'revenueByDateRange'])
+    ->middleware('role.check:admin');
 
     });

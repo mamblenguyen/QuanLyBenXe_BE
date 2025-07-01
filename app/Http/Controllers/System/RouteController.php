@@ -533,4 +533,37 @@ class RouteController extends Controller
             return ResponseService::customResponse(null, 'An error occurred: ' . $e->getMessage(), 500);
         }
     }
+
+
+    //Count Route and schedule 
+
+    public function getRouteAndScheduleStats(Request $request)
+{
+    try {
+        $token = JWTAuth::parseToken();
+        $payload = $token->getPayload();
+
+        if (!isset($payload['garage']) || !isset($payload['garage']['Garage_id'])) {
+            return ResponseService::customResponse(null, 'Garage ID does not exist in the token.', 404);
+        }
+
+        $garage_id = $payload['garage']['Garage_id'];
+
+        $totalRoutes = Route::where('garage_id', $garage_id)->where('route_status_id', 1)->count();
+
+        $routeIds = Route::where('garage_id', $garage_id)->pluck('id');
+
+        $totalSchedules = RouteSchedule::whereIn('route_id', $routeIds)->where('schedule_status_id', 1)->count();
+
+        return ResponseService::customResponse([
+            'totalRoutes' => $totalRoutes,
+            'totalSchedules' => $totalSchedules
+        ], 'Route and Schedule statistics retrieved successfully.', 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }
