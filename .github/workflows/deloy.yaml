@@ -18,9 +18,15 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ubuntu/QuanLyBenXe_BE
+            git reset --hard
             git pull origin production
             sudo docker-compose down
             sudo docker-compose up -d --build
+            sudo docker exec laravel_app composer install --no-interaction --prefer-dist --optimize-autoloader
+            sudo docker exec laravel_app php artisan key:generate
+            sudo docker exec laravel_app php artisan config:clear
+            sudo docker exec laravel_app php artisan migrate --force
+            sudo docker exec laravel_app chmod -R 777 storage bootstrap/cache
 
 
 
