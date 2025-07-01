@@ -20,7 +20,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd /home/ubuntu/<your-repo>
+            cd /home/ubuntu/QuanLyBenXe_BE
             git pull origin main
             docker-compose down
             docker-compose up -d --build
