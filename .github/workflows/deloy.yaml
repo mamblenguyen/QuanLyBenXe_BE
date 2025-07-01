@@ -22,10 +22,10 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             if [ ! -d /var/www/laravel-api ]; then
-              git clone -b production https://github.com/mamblenguyen/QuanLyBenXe_BE.git /var/www/laravel-api
+              sudo git clone -b production https://github.com/mamblenguyen/QuanLyBenXe_BE.git /var/www/laravel-api
             fi
             cd /var/www/laravel-api
-            git pull origin production
+            sudo git pull origin production
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
             php artisan config:clear
