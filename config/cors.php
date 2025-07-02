@@ -9,8 +9,8 @@ return [
     // ⚠️ CHỈ ĐỊNH rõ domain của frontend
     'allowed_origins' => [
         'https://mamblezone.online',
-        'https://api.mamblezone.online',
     ],
+
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
