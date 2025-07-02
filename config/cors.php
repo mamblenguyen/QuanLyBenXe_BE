@@ -7,7 +7,7 @@ return [
     'allowed_methods' => ['*'],
 
     // ⚠️ CHỈ ĐỊNH rõ domain của frontend
-    'allowed_origins' => ['http://54.151.156.187'], // KHÔNG ĐƯỢC dùng '*'
+    'allowed_origins' => ['http://54.151.156.187','http://localhost:3000' ], // KHÔNG ĐƯỢC dùng '*'
 
     'allowed_origins_patterns' => [],
 
