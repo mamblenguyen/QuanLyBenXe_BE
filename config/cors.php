@@ -7,8 +7,10 @@ return [
     'allowed_methods' => ['*'],
 
     // ⚠️ CHỈ ĐỊNH rõ domain của frontend
-    'allowed_origins' => ['http://54.151.156.187', 'http://localhost:3000'],
-
+    'allowed_origins' => [
+        'https://mamblezone.online',
+        'https://api.mamblezone.online',
+    ],
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
