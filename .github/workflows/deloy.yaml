@@ -1,4 +1,4 @@
-name: Deploy FE to EC2
+name: Deploy Laravel to EC2
 
 on:
   push:
@@ -7,35 +7,31 @@ on:
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-fe .
-          docker push ${{ secrets.DOCKER_USERNAME }}/react-fe
-
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_KEY }}
           script: |
-            docker stop react-fe || true
-            docker rm react-fe || true
-            docker rmi ${{ secrets.DOCKER_USERNAME }}/react-fe || true
-            docker pull ${{ secrets.DOCKER_USERNAME }}/react-fe
-            docker run -d -p 80:80 --name react-fe ${{ secrets.DOCKER_USERNAME }}/react-fe
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            if [ ! -d /var/www/laravel-api ]; then
+              sudo mkdir -p /var/www
+              sudo chown -R ubuntu:ubuntu /var/www
+              git clone -b production git@github.com:mamblenguyen/QuanLyBenXe_BE.git /var/www/laravel-api
+            fi
+            cd /var/www/laravel-api
+            git pull origin production
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:clear
+            php artisan cache:clear
+            sudo chown -R www-data:www-data /var/www/laravel-api
+
