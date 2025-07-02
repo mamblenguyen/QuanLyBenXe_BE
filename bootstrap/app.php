@@ -35,13 +35,15 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         },
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
+ ->withMiddleware(function (Middleware $middleware) {
+    $middleware
+        ->append(\Illuminate\Http\Middleware\HandleCors::class) // ✅ Đây là cú pháp đúng trong Laravel 11
+        ->alias([
             'role.check' => RoleCheckMiddleware::class,
             'secret.key' => SecretKeyMiddleware::class,
-
         ]);
-    })
+})
+
     ->withExceptions(function (Exceptions $exceptions) {
         // Xử lý ngoại lệ AuthenticationException
         $exceptions->render(function (AuthenticationException $e, Request $request) {
