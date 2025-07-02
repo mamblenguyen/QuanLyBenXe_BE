@@ -2,12 +2,12 @@
 
 return [
 
-    'paths' => ['api/*', 'login', 'logout', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout'],
 
     'allowed_methods' => ['*'],
 
     // ⚠️ CHỈ ĐỊNH rõ domain của frontend
-    'allowed_origins' => ['http://localhost:3000', 'http://54.151.156.187'],
+    'allowed_origins' => ['http://54.151.156.187'], // KHÔNG ĐƯỢC dùng '*'
 
     'allowed_origins_patterns' => [],
 
